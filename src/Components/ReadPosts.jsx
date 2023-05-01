@@ -11,10 +11,13 @@ const ReadPosts = () => {
 
     const [orderBy, setOrderBy] = useState('created_at');
 
+    const [loading, setLoading] = useState(false)
+
     useEffect(() => {
         const readPost = async () => {
             const {data, error} = await supabase.from("Footballfrenzy").select().is("parent", null).order(orderBy, { ascending: false });
             setPosts(data)
+            setLoading(true)
         } 
         readPost().catch(console.error)
     }, [orderBy]);
@@ -26,13 +29,13 @@ const ReadPosts = () => {
     
     return (
         <div className="App">
+            <div>{loading ? null : <div className='loading'></div>}</div>
             {   (filteredResults.length > 0) || (posts.length > 0) ?
                 <div className='order-by'>
                     <h4>Order by:</h4>
                     <button className="btn" onClick={() => setOrderBy('created_at')}>Newest</button>
                     <button className="btn" onClick={() => setOrderBy('upvotes')}>Most Popular</button>
-                </div> :
-                null
+                </div> : null
             }
             <div className='Card-container'>
                 {
